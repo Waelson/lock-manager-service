@@ -1,6 +1,22 @@
 version: '3.9'
 
 services:
+
+  lock-manager-api:
+    build:
+      context: ./projects/lock-manager-api
+      dockerfile: Dockerfile
+    ports:
+      - '8181:8181'
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    environment:
+      REDIS_ADDRESSES: "redis1:6379,redis2:6379,redis3:6379"
+    networks:
+      - redis-network
+
   redis1:
     image: redis:latest
     container_name: redis1
