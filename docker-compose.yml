@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  redis1:
+    image: redis:latest
+    container_name: redis1
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--port", "6379"]
+    networks:
+      - redis-network
+
+  redis2:
+    image: redis:latest
+    container_name: redis2
+    ports:
+      - "6380:6379"
+    command: ["redis-server", "--port", "6379"]
+    networks:
+      - redis-network
+
+  redis3:
+    image: redis:latest
+    container_name: redis3
+    ports:
+      - "6381:6379"
+    command: ["redis-server", "--port", "6379"]
+    networks:
+      - redis-network
+
+networks:
+  redis-network:
+    driver: bridge
