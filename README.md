@@ -155,7 +155,7 @@ func main() {
 ```
 
 #### Uso do SDK
-1. Adquirir um Lock
+1. **Adquirir um Lock**
 
 Para adquirir um lock, utilize o método Acquire. Este método retorna o lock adquirido e uma função para liberar o lock.
 
@@ -200,7 +200,7 @@ func main() {
 
 ```
 
-2. Liberar um Lock
+2. **Liberar um Lock**
 
 Para liberar um lock manualmente, use o método `Release`.
 
@@ -235,7 +235,7 @@ func main() {
 
 ```
 
-3. Renovar um Lock
+3. **Renovar um Lock**
 
 Para renovar o TTL de um lock ativo, use o método `Refresh`.
 
@@ -252,7 +252,7 @@ import (
 )
 
 func main() {
-	client := sdk.NewLockClient("http://localhost:8181")
+	client := ...
 
 	ctx := context.Background()
 	lock := &sdk.Lock{
