@@ -51,3 +51,28 @@ Este projeto implementa um serviço de lock distribuído utilizando Redis como b
 3. **Clientes**:
 
 - Consumidores interagem com o serviço usando o SDK ou diretamente via HTTP.
+
+### Instalação e Configuração
+#### Pré-requisitos:
+1. **Docker**: Para executar o Redis e o serviço de lock.
+2. **Go**: Para compilar e executar o código.
+
+#### Passos para Instalação:
+1. Clone o repositório:
+
+``` bash
+git clone https://github.com/Waelson/lock-manager-service.git
+cd lock-manager-service
+```
+
+2. Execute os serviços com Docker Compose:
+
+``` bash
+docker-compose up --build
+```
+
+3. Verifique se o serviço do cliente está rodando:
+
+``` bash
+curl -X POST -H "Content-Type: application/json" -d '{"item_name": "item1", "quantity": 1}' http://localhost:9090/order
+```
