@@ -15,7 +15,7 @@ O principal objetivo de um serviço de lock distribuído é garantir exclusão m
 4. **Durabilidade**: Os locks podem ser configurados para sobreviver a reinicializações, dependendo da arquitetura utilizada.
 
 ### Complexidade
-A criação de uma solução de lock distribuído é um desafio significativo em sistemas distribuídos. Isso ocorre devido à necessidade de garantir exclusão mútua, consistência, e tolerância a falhas em ambientes onde não há um relógio global ou sincronização perfeita entre os nós.
+A criação de uma solução de lock distribuído é um desafio significativo em sistemas distribuídos. Isso ocorre devido à necessidade de garantir **exclusão mútua**, **consistência**, e **tolerância a falhas** em ambientes onde não há um relógio global ou sincronização perfeita entre os nós.
 
 #### Desafios Comuns:
 1. **Falhas de Rede**:
@@ -33,6 +33,24 @@ Tolerância a Falhas:
 
 - Garantir que o quórum necessário para validar ou liberar locks seja atingido, mesmo em caso de falhas de alguns nós.
 
+#### A Técnica RedLock
+A solução foi desenvolvida utilizando a técnica **RedLock**, criada por **Salvatore Sanfilippo**, o criador do Redis. Essa técnica é uma abordagem prática e robusta para implementar locks distribuídos usando múltiplas instâncias do Redis.
+
+#### Como o RedLock Funciona:
+1. **Distribuição de Nós**:
+
+- A técnica requer pelo menos 3 instâncias de Redis, preferencialmente em diferentes zonas de disponibilidade, para evitar falhas correlacionadas.
+2. **Processo de Aquisição**:
+
+   - O cliente tenta adquirir o lock em todas as instâncias Redis, uma a uma, utilizando o comando atômico `SET NX` com um TTL definido.
+3. **Validação do Quórum**:
+
+- O lock é considerado válido se o cliente conseguir adquirir o lock em `mais da metade` das instâncias (quórum) antes que o TTL expire.
+4. **Manutenção e Liberação**:
+
+- O lock pode ser renovado (refresh) para estender seu tempo de validade.
+- A liberação do lock deve ser realizada em todas as instâncias que o possuem.
+___
 ### Funcionalidades do Serviço de Lock Distribuído
 Este projeto implementa um serviço de lock distribuído utilizando Redis como backend, aproveitando sua capacidade de executar operações atômicas e notificações de eventos.
 
