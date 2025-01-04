@@ -76,3 +76,36 @@ docker-compose up --build
 ``` bash
 curl -X POST -H "Content-Type: application/json" -d '{"item_name": "item1", "quantity": 1}' http://localhost:9090/order
 ```
+
+### Testes de Carga
+O projeto inclui um **script de teste de carga** para avaliar a eficiência do serviço. Ele realiza múltiplas requisições simultâneas para simular cenários de uso real.
+
+#### Localização do Script:
+O script está disponível no diretório raiz do projeto com o nome `run_requests.sh`.
+
+#### Principais Características:
+- Realiza múltiplos lotes de requisições simultâneas.
+- Exibe uma barra de progresso e um sumário das requisições bem-sucedidas e com erro.
+- Gera um log (responses.log) com o resultado de cada requisição.
+
+
+#### Como Executar:
+1. Torne o script executável:
+
+``` bash
+chmod +x run_requests.sh
+```
+
+2. Execute o script:
+
+``` bash
+./run_requests.sh
+```
+
+3. Verifique o progresso no terminal e os resultados no arquivo `responses.log`.
+
+#### Exemplo de Saída:
+
+``` bash
+[###############################                ] 70% (70/100) | Successful: 690 | Failed: 10
+```
