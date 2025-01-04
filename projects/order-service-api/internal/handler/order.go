@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/Waelson/lock-manager-service/order-service-api/internal/repository"
 	"github.com/Waelson/lock-manager-service/order-service-api/pkg/sdk/locker"
 	"net/http"
+	"time"
 )
 
 type OrderRequest struct {
@@ -25,10 +27,11 @@ func NewOrderHandler(repo *repository.InventoryRepository, lockClient *locker.Lo
 			return
 		}
 
-		ctx := r.Context()
+		ctx, cancelFunc := context.WithTimeout(r.Context(), 200*time.Millisecond)
+		defer cancelFunc()
 
 		// Adquire o lock para o item
-		lock, releaseFunc, err := lockClient.Acquire(ctx, req.ItemName, "1s", "2s")
+		lock, releaseFunc, err := lockClient.Acquire(ctx, req.ItemName, "50ms", "100ms")
 		if err != nil {
 			http.Error(w, "Failed to acquire lock", http.StatusConflict)
 			return

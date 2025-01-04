@@ -128,6 +128,7 @@ func (sdk *LockClient) Acquire(ctx context.Context, resource string, ttl string,
 
 		// Apply exponential backoff with jitter
 		backoff = sdk.calculateBackoff(backoff)
+		fmt.Printf("Resource '%s' locked. Let's wait...\n", resource)
 		time.Sleep(backoff)
 	}
 

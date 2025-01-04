@@ -5,7 +5,7 @@ URL="http://localhost:9090/order"               # URL do endpoint
 DATA='{"item_name": "item1", "quantity": 1}'    # Dados da requisição
 OUTPUT_FILE="responses.log"                     # Arquivo de saída
 CONCURRENT_REQUESTS=10                          # Número de requisições simultâneas por lote
-TOTAL_BATCHES=10                                # Número total de lotes
+TOTAL_BATCHES=100                               # Número total de lotes
 BATCH_SLEEP=0.1                                 # Intervalo entre lotes (em segundos)
 
 # Exibe as configurações principais
@@ -24,18 +24,8 @@ show_config() {
 
 # Verifica e remove o arquivo de saída, se existir
 if [ -f "$OUTPUT_FILE" ]; then
-  echo "Removing existing file: $OUTPUT_FILE"
   rm "$OUTPUT_FILE"
 fi
-
-# Função para exibir a barra de progresso
-show_progress() {
-  local current=$1
-  local total=$2
-  local percent=$((current * 100 / total))
-  local progress=$((percent / 2))
-  printf "\r[%-50s] %d%% (%d/%d)" "$(printf '#%.0s' $(seq 1 $progress))" "$percent" "$current" "$total"
-}
 
 # Função para realizar uma requisição
 make_request() {
@@ -43,18 +33,31 @@ make_request() {
   echo "$RESPONSE"
 }
 
-# Exibe as configurações
-show_config
-
 # Inicializa os contadores
 SUCCESS_COUNT=0
 ERROR_COUNT=0
 
+# Função para atualizar o progresso e sumário em uma única linha
+update_progress_and_summary() {
+  local current_batch=$1
+  local total_batches=$2
+  local percent=$((current_batch * 100 / total_batches))
+  local progress=$((percent / 2))
+
+  printf "\r[%-50s] %d%% (%d/%d) | Successful: %d | Failed: %d" \
+    "$(printf '#%.0s' $(seq 1 $progress))" \
+    "$percent" \
+    "$current_batch" \
+    "$total_batches" \
+    "$SUCCESS_COUNT" \
+    "$ERROR_COUNT"
+}
+
+# Exibe as configurações
+show_config
+
 # Loop principal para os lotes de requisições
 for ((batch = 1; batch <= TOTAL_BATCHES; batch++)); do
-  # Mostra o progresso
-  show_progress $batch $TOTAL_BATCHES
-
   # Armazena os resultados de cada lote
   BATCH_RESULTS=()
 
@@ -76,18 +79,13 @@ for ((batch = 1; batch <= TOTAL_BATCHES; batch++)); do
     echo "HTTP Code: $response" >> "$OUTPUT_FILE"
   done
 
+  # Atualiza a barra de progresso e o sumário em tempo real
+  update_progress_and_summary $batch $TOTAL_BATCHES
+
   # Intervalo entre os lotes
   sleep $BATCH_SLEEP
 done
 
 # Finaliza a barra de progresso
-show_progress $TOTAL_BATCHES $TOTAL_BATCHES
+update_progress_and_summary $TOTAL_BATCHES $TOTAL_BATCHES
 echo -e "\nAll requests completed. Responses saved to $OUTPUT_FILE."
-
-# Exibe o resumo
-echo "==============================================="
-echo "                   Summary                    "
-echo "==============================================="
-printf "%-25s: %d\n" "Successful Requests" "$SUCCESS_COUNT"
-printf "%-25s: %d\n" "Failed Requests" "$ERROR_COUNT"
-echo "==============================================="
