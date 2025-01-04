@@ -1,8 +1,44 @@
 version: '3.9'
 
 services:
+  postgres:
+    image: postgres:15
+    container_name: order_service_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: inventory_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./projects/order-service-api/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - redis-network
+
+  order-service-api:
+    container_name: order_service_api
+    build:
+      context: ./projects/order-service-api
+      dockerfile: Dockerfile
+    ports:
+      - '9090:9090'
+    depends_on:
+      - lock-manager-api
+      - postgres
+    environment:
+      LOCK_SERVICE_URL: "http://lock-manager-api:8181"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "inventory_db"
+    networks:
+      - redis-network
 
   lock-manager-api:
+    container_name: lock_manager_api
     build:
       context: ./projects/lock-manager-api
       dockerfile: Dockerfile
@@ -47,3 +83,6 @@ services:
 networks:
   redis-network:
     driver: bridge
+
+volumes:
+  postgres_data:
