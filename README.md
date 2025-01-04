@@ -109,3 +109,44 @@ chmod +x run_requests.sh
 ``` bash
 [###############################                ] 70% (70/100) | Successful: 690 | Failed: 10
 ```
+
+### Documentação do SDK `LockClient`
+O **SDK** `LockClient` é uma biblioteca em Go que permite integrar facilmente com o serviço de lock distribuído. Ele fornece métodos para adquirir, liberar e renovar locks de forma programática, simplificando a interação com o serviço de API.
+
+#### Funcionalidades do SDK
+
+O SDK fornece os seguintes métodos principais:
+
+1. **Acquire**: Adquire um lock para um recurso.
+2. **Release**: Libera um lock adquirido.
+3. **Refresh**: Renova o TTL de um lock ativo.
+
+#### Configuração do Cliente
+O cliente LockClient pode ser configurado usando o padrão de options, permitindo flexibilidade na configuração do backoff exponencial.
+
+#### Exemplo de Configuração:
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/Waelson/lock-manager-service/order-service-api/pkg/sdk/locker"
+)
+
+func main() {
+	// Configuração do cliente com backoff exponencial
+	client := sdk.NewLockClient(
+		"http://localhost:8181", // URL do serviço de lock
+		sdk.WithExponentialBackoff(&sdk.ExponentialBackoff{
+			Initial:   200 * time.Millisecond,
+			Max:       5 * time.Second,
+			MaxJitter: 1 * time.Second,
+		}),
+	)
+
+	// Exemplo de uso do cliente
+	_ = client // Evitar erro de variável não utilizada
+}
+```
