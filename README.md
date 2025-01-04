@@ -26,11 +26,12 @@ A criação de uma solução de lock distribuído é um desafio significativo em
 2. **Relógios Desincronizados**:
 
    - Sistemas distribuídos não possuem relógios perfeitamente sincronizados, o que pode causar problemas ao determinar a validade de um lock.
-   Tolerância a Falhas:
+
+3. **Tolerância a Falhas**:
 
    - A solução deve lidar com falhas de nós ou processos sem causar deadlocks ou inconsistências.
 
-3. **Alcance do Quórum**:
+4. **Alcance do Quórum**:
 
    - Garantir que o quórum necessário para validar ou liberar locks seja atingido, mesmo em caso de falhas de alguns nós.
 
