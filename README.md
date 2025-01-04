@@ -14,24 +14,25 @@ O principal objetivo de um serviço de lock distribuído é garantir exclusão m
 3. **Escalabilidade**: Permite operações seguras em sistemas com milhares de nós e serviços concorrentes.
 4. **Durabilidade**: Os locks podem ser configurados para sobreviver a reinicializações, dependendo da arquitetura utilizada.
 
+___
 ### Complexidade
 A criação de uma solução de lock distribuído é um desafio significativo em sistemas distribuídos. Isso ocorre devido à necessidade de garantir **exclusão mútua**, **consistência**, e **tolerância a falhas** em ambientes onde não há um relógio global ou sincronização perfeita entre os nós.
 
 #### Desafios Comuns:
 1. **Falhas de Rede**:
 
-- A comunicação entre os nós pode sofrer atrasos, perdas ou desconexões momentâneas, dificultando a coordenação do estado do lock.
+   - A comunicação entre os nós pode sofrer atrasos, perdas ou desconexões momentâneas, dificultando a coordenação do estado do lock.
 
 2. **Relógios Desincronizados**:
 
-- Sistemas distribuídos não possuem relógios perfeitamente sincronizados, o que pode causar problemas ao determinar a validade de um lock.
-Tolerância a Falhas:
+   - Sistemas distribuídos não possuem relógios perfeitamente sincronizados, o que pode causar problemas ao determinar a validade de um lock.
+   Tolerância a Falhas:
 
-- A solução deve lidar com falhas de nós ou processos sem causar deadlocks ou inconsistências.
+   - A solução deve lidar com falhas de nós ou processos sem causar deadlocks ou inconsistências.
 
 3. **Alcance do Quórum**:
 
-- Garantir que o quórum necessário para validar ou liberar locks seja atingido, mesmo em caso de falhas de alguns nós.
+   - Garantir que o quórum necessário para validar ou liberar locks seja atingido, mesmo em caso de falhas de alguns nós.
 
 #### A Técnica RedLock
 A solução foi desenvolvida utilizando a técnica **RedLock**, criada por **Salvatore Sanfilippo**, o criador do Redis. Essa técnica é uma abordagem prática e robusta para implementar locks distribuídos usando múltiplas instâncias do Redis.
@@ -39,17 +40,17 @@ A solução foi desenvolvida utilizando a técnica **RedLock**, criada por **Sal
 #### Como o RedLock Funciona:
 1. **Distribuição de Nós**:
 
-- A técnica requer pelo menos 3 instâncias de Redis, preferencialmente em diferentes zonas de disponibilidade, para evitar falhas correlacionadas.
+   - A técnica requer pelo menos 3 instâncias de Redis, preferencialmente em diferentes zonas de disponibilidade, para evitar falhas correlacionadas.
 2. **Processo de Aquisição**:
 
    - O cliente tenta adquirir o lock em todas as instâncias Redis, uma a uma, utilizando o comando atômico `SET NX` com um TTL definido.
 3. **Validação do Quórum**:
 
-- O lock é considerado válido se o cliente conseguir adquirir o lock em `mais da metade` das instâncias (quórum) antes que o TTL expire.
+   - O lock é considerado válido se o cliente conseguir adquirir o lock em `mais da metade` das instâncias (quórum) antes que o TTL expire.
 4. **Manutenção e Liberação**:
 
-- O lock pode ser renovado (refresh) para estender seu tempo de validade.
-- A liberação do lock deve ser realizada em todas as instâncias que o possuem.
+   - O lock pode ser renovado (refresh) para estender seu tempo de validade.
+   - A liberação do lock deve ser realizada em todas as instâncias que o possuem.
 ___
 ### Funcionalidades do Serviço de Lock Distribuído
 Este projeto implementa um serviço de lock distribuído utilizando Redis como backend, aproveitando sua capacidade de executar operações atômicas e notificações de eventos.
@@ -57,20 +58,20 @@ Este projeto implementa um serviço de lock distribuído utilizando Redis como b
 #### Principais Funcionalidades:
 1. **Aquisição de Locks**:
 
-- Clientes podem adquirir um lock em um recurso específico por um período de tempo definido (TTL).
-- Suporte para retries automáticos com backoff exponencial.
+   - Clientes podem adquirir um lock em um recurso específico por um período de tempo definido (TTL).
+   - Suporte para retries automáticos com backoff exponencial.
 
 2. **Liberação de Locks**:
 
-- Locks podem ser liberados explicitamente ou expirar automaticamente.
+   - Locks podem ser liberados explicitamente ou expirar automaticamente.
 
 3. **Renovação de Locks**:
 
-- Permite estender o tempo de vida (TTL) de um lock ativo para evitar expiração durante operações críticas.
+   - Permite estender o tempo de vida (TTL) de um lock ativo para evitar expiração durante operações críticas.
 
 4. **Alta Disponibilidade**:
 
-- Funciona com clusters Redis para maior tolerância a falhas e escalabilidade.
+   - Funciona com clusters Redis para maior tolerância a falhas e escalabilidade.
 
 ___
 ### Arquitetura
@@ -78,17 +79,17 @@ ___
 #### Componentes:
 1. **Redis**:
 
-- Armazena o estado dos locks.
-- Utiliza operações atômicas como SETNX e EXPIRE para gerenciar os locks.
+   - Armazena o estado dos locks.
+   - Utiliza operações atômicas como SETNX e EXPIRE para gerenciar os locks.
 
 2. **Serviço de API de Lock**:
 
-- Exponibiliza endpoints HTTP para aquisição, liberação e renovação de locks.
-- Implementado em Go e projetado para ser stateless.
+   - Exponibiliza endpoints HTTP para aquisição, liberação e renovação de locks.
+   - Implementado em Go e projetado para ser stateless.
 
 3. **Clientes**:
 
-- Consumidores interagem com o serviço usando o SDK ou diretamente via HTTP.
+   - Consumidores interagem com o serviço usando o SDK ou diretamente via HTTP.
 
 ___
 ### Instalação e Configuração
