@@ -35,6 +35,7 @@ Este projeto implementa um serviço de lock distribuído utilizando Redis como b
 
 - Funciona com clusters Redis para maior tolerância a falhas e escalabilidade.
 
+___
 ### Arquitetura
 ![Architecture](documentation/architecture.png)
 #### Componentes:
@@ -52,6 +53,7 @@ Este projeto implementa um serviço de lock distribuído utilizando Redis como b
 
 - Consumidores interagem com o serviço usando o SDK ou diretamente via HTTP.
 
+___
 ### Instalação e Configuração
 #### Pré-requisitos:
 1. **Docker**: Para executar o Redis e o serviço de lock.
@@ -77,6 +79,7 @@ docker-compose up --build
 curl -X POST -H "Content-Type: application/json" -d '{"item_name": "item1", "quantity": 1}' http://localhost:9090/order
 ```
 
+___
 ### Testes de Carga
 O projeto inclui um **script de teste de carga** para avaliar a eficiência do serviço. Ele realiza múltiplas requisições simultâneas para simular cenários de uso real.
 
@@ -109,7 +112,7 @@ chmod +x run_requests.sh
 ``` bash
 [###############################                ] 70% (70/100) | Successful: 690 | Failed: 10
 ```
-
+___
 ### Documentação do SDK `LockClient`
 O **SDK** `LockClient` é uma biblioteca em Go que permite integrar facilmente com o serviço de lock distribuído. Ele fornece métodos para adquirir, liberar e renovar locks de forma programática, simplificando a interação com o serviço de API.
 
@@ -153,6 +156,7 @@ func main() {
 
 #### Uso do SDK
 1. Adquirir um Lock
+
 Para adquirir um lock, utilize o método Acquire. Este método retorna o lock adquirido e uma função para liberar o lock.
 
 #### Exemplo:
