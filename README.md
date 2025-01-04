@@ -14,6 +14,25 @@ O principal objetivo de um serviço de lock distribuído é garantir exclusão m
 3. **Escalabilidade**: Permite operações seguras em sistemas com milhares de nós e serviços concorrentes.
 4. **Durabilidade**: Os locks podem ser configurados para sobreviver a reinicializações, dependendo da arquitetura utilizada.
 
+### Complexidade
+A criação de uma solução de lock distribuído é um desafio significativo em sistemas distribuídos. Isso ocorre devido à necessidade de garantir exclusão mútua, consistência, e tolerância a falhas em ambientes onde não há um relógio global ou sincronização perfeita entre os nós.
+
+#### Desafios Comuns:
+1. **Falhas de Rede**:
+
+- A comunicação entre os nós pode sofrer atrasos, perdas ou desconexões momentâneas, dificultando a coordenação do estado do lock.
+
+2. **Relógios Desincronizados**:
+
+- Sistemas distribuídos não possuem relógios perfeitamente sincronizados, o que pode causar problemas ao determinar a validade de um lock.
+Tolerância a Falhas:
+
+- A solução deve lidar com falhas de nós ou processos sem causar deadlocks ou inconsistências.
+
+3. **Alcance do Quórum**:
+
+- Garantir que o quórum necessário para validar ou liberar locks seja atingido, mesmo em caso de falhas de alguns nós.
+
 ### Funcionalidades do Serviço de Lock Distribuído
 Este projeto implementa um serviço de lock distribuído utilizando Redis como backend, aproveitando sua capacidade de executar operações atômicas e notificações de eventos.
 
