@@ -1,5 +1,4 @@
 # Serviço de Gerenciamento de Locks Distribuídos
-Implementação de um serviço de gerenciamento de locks distribuídos
 
 ### Introdução
 Um Serviço de Lock Distribuído é um mecanismo projetado para coordenar o acesso a recursos compartilhados em sistemas distribuídos. Ele garante que múltiplos processos, serviços ou sistemas não acessem simultaneamente uma seção crítica de código ou dados, prevenindo inconsistências e corrupção de dados.
