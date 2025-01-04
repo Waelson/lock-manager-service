@@ -4,8 +4,8 @@
 URL="http://localhost:9090/order"               # URL do endpoint
 DATA='{"item_name": "item1", "quantity": 1}'    # Dados da requisição
 OUTPUT_FILE="responses.log"                     # Arquivo de saída
-CONCURRENT_REQUESTS=10                          # Número de requisições simultâneas por lote
-TOTAL_BATCHES=100                               # Número total de lotes
+CONCURRENT_REQUESTS=20                          # Número de requisições simultâneas por lote
+TOTAL_BATCHES=200                               # Número total de lotes
 BATCH_SLEEP=0.1                                 # Intervalo entre lotes (em segundos)
 
 # Exibe as configurações principais

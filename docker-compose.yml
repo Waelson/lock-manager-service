@@ -25,10 +25,10 @@ services:
     ports:
       - '9090:9090'
     depends_on:
-      - lock-manager-api
+      - nginx
       - postgres
     environment:
-      LOCK_SERVICE_URL: "http://lock-manager-api:8181"
+      LOCK_SERVICE_URL: "http://nginx:80"
       POSTGRES_HOST: "postgres"
       POSTGRES_PORT: "5432"
       POSTGRES_USER: "postgres"
@@ -37,13 +37,42 @@ services:
     networks:
       - redis-network
 
-  lock-manager-api:
-    container_name: lock_manager_api
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./projects/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - lock-manager-api-01
+      - lock-manager-api-02
+    networks:
+      - redis-network
+
+
+  lock-manager-api-01:
+    container_name: lock-manager-api-01
     build:
       context: ./projects/lock-manager-api
       dockerfile: Dockerfile
     ports:
-      - '8181:8181'
+      - "8181:8181"
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    environment:
+      REDIS_ADDRESSES: "redis1:6379,redis2:6379,redis3:6379"
+    networks:
+      - redis-network
+
+  lock-manager-api-02:
+    container_name: lock-manager-api-02
+    build:
+      context: ./projects/lock-manager-api
+      dockerfile: Dockerfile
     depends_on:
       - redis1
       - redis2
