@@ -150,3 +150,48 @@ func main() {
 	_ = client // Evitar erro de variável não utilizada
 }
 ```
+
+#### Uso do SDK
+1. Adquirir um Lock
+Para adquirir um lock, utilize o método Acquire. Este método retorna o lock adquirido e uma função para liberar o lock.
+
+#### Exemplo:
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/Waelson/lock-manager-service/order-service-api/pkg/sdk/locker"
+)
+
+func main() {
+	client := ...
+
+	ctx := context.Background()
+	resource := "my-resource"
+	ttl := "50ms"
+	expire := "100ms"
+
+	// Adquirir lock
+	lock, releaseFunc, err := client.Acquire(ctx, resource, ttl, expire)
+	if err != nil {
+		fmt.Printf("Erro ao adquirir lock: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Lock adquirido: Token=%s, Recurso=%s\n", lock.Token, lock.Resource)
+
+	// Liberar lock ao final
+	defer func() {
+		if err := releaseFunc(); err != nil {
+			fmt.Printf("Erro ao liberar lock: %v\n", err)
+		} else {
+			fmt.Println("Lock liberado com sucesso.")
+		}
+	}()
+}
+
+```
