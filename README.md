@@ -199,3 +199,76 @@ func main() {
 }
 
 ```
+
+2. Liberar um Lock
+
+Para liberar um lock manualmente, use o método `Release`.
+
+#### Exemplo:
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/Waelson/lock-manager-service/order-service-api/pkg/sdk/locker"
+)
+
+func main() {
+	client := ...
+
+	ctx := context.Background()
+	lock := &sdk.Lock{
+		Token:    "example-token",
+		Resource: "my-resource",
+	}
+
+	// Liberar lock
+	err := client.Release(ctx, lock)
+	if err != nil {
+		fmt.Printf("Erro ao liberar lock: %v\n", err)
+	} else {
+		fmt.Println("Lock liberado com sucesso.")
+	}
+}
+
+```
+
+3. Renovar um Lock
+
+Para renovar o TTL de um lock ativo, use o método `Refresh`.
+
+#### Exemplo:
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/Waelson/lock-manager-service/order-service-api/pkg/sdk/locker"
+)
+
+func main() {
+	client := sdk.NewLockClient("http://localhost:8181")
+
+	ctx := context.Background()
+	lock := &sdk.Lock{
+		Token:    "example-token",
+		Resource: "my-resource",
+	}
+
+	newTTL := "300ms"
+
+	// Renovar lock
+	err := client.Refresh(ctx, lock, newTTL)
+	if err != nil {
+		fmt.Printf("Erro ao renovar lock: %v\n", err)
+	} else {
+		fmt.Printf("Lock renovado com sucesso para %s\n", newTTL)
+	}
+}
+
+```
